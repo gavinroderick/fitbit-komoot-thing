@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,7 +17,19 @@ app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Komoot Fitb
 app.UseHttpsRedirection();
 app.UseAuthorization();
 
-app.MapGet("/", () => "Alright");
+app.MapGet("/", (string verify) =>
+{
+    if(!string.IsNullOrEmpty(verify)) return HandleVerification(verify);
+    return Results.Ok("S'all good");
+});
+
+IResult HandleVerification(string queryParameter)
+{
+    if(queryParameter == "correctVerificationCode") return Results.NoContent();
+    if(queryParameter == "incorrectVerificationCode") return Results.NotFound();
+    return Results.BadRequest();
+}
+
 app.MapGet("/auth/redirect", () => "Authy");
 
 app.Run();
