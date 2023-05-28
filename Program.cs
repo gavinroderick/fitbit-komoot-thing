@@ -3,12 +3,11 @@ var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
 app.UseHttpsRedirection();
-app.UseAuthorization();
 
-app.MapGet("/", (string verify) =>
+app.MapPost("/", (string? verify, FitbitPayload payload) =>
 {
     if(!string.IsNullOrEmpty(verify)) return HandleVerification(verify);
-    return Results.Ok("S'all good");
+    return Results.Ok(payload);
 });
 
 app.Run();
@@ -20,3 +19,4 @@ IResult HandleVerification(string queryParameter)
     return Results.BadRequest();
 }
 
+internal record FitbitPayload (string Id);
