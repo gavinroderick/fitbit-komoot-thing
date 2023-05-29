@@ -11,12 +11,11 @@ app.MapPost("/", (string? verify, FitbitPayload payload) =>
 });
 
 app.Run();
-
+const string verificationCode = "0d25592773aa1a6e5ed0f3763a960a386bbcdc813adfa29f71847602e9bd5177";
 IResult HandleVerification(string queryParameter)
 {
-    if(queryParameter == "correctVerificationCode") return Results.NoContent();
-    if(queryParameter == "incorrectVerificationCode") return Results.NotFound();
-    return Results.BadRequest();
+    if(queryParameter == verificationCode) return Results.NoContent();
+    return Results.NotFound();
 }
 
 internal record FitbitPayload (string Id);
